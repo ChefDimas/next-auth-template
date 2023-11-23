@@ -24,7 +24,7 @@ const handler = NextAuth({
         const password = credentials?.password;
 
         // Connect to database
-        await mongoose.connect(process.env.MONGO_URL)
+        await mongoose.connect(process.env.MONGO_URI)
         // Find user
         const user = await User.findOne({email})
         // Check if user exists

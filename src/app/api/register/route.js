@@ -2,23 +2,34 @@ import mongoose from "mongoose";
 import {User} from "@/models/User";
 
 export async function POST(req) {
-  try {
-    // req.body is a JSON object with the user data
-    const body = await req.json();
-    // Connect to MongoDB and create the user
-    await mongoose.connect(process.env.MONGO_URL);
-    // Check if a user with the given email already exists
-    const existingUser = await User.findOne({ email: body.email });
-    if (existingUser) {
-      return Response.json({ error: 'User with such email already exists' }, { status: 400 });
-    }
-    // Create the user
-    const createdUser = await User.create(body);
-    // return the created user
-    return Response.json(createdUser, { status: 201 })
-  } catch (error) {
 
-    // If there is an error, return the error message
-    return Response.json({error: error.errors.password.message}, {status: 400});
+  await mongoose.connect(process.env.MONGO_URI);
+  const body = await req.json();
+
+  try {
+    if (body.isOAuthUser) {
+      // Handle Google OAuth user
+      const user = await User.findOneAndUpdate({email: body.email}, {
+        $setOnInsert: {
+          isOAuthUser: true,
+          email: body.email,
+          // Any other fields you need to set
+        }
+      }, {
+        new: true,
+        upsert: true, // Creates the user if it doesn't exist
+      });
+      return Response.json(user, {status: 201});
+    } else {
+      // Handle regular user
+      const existingUser = await User.findOne({email: body.email});
+      if (existingUser) {
+        return Response.json({error: 'User with such email already exists'}, {status: 400});
+      }
+      const createdUser = await User.create(body);
+      return Response.json(createdUser, {status: 201});
+    }
+  } catch (error) {
+    return Response.json({error: error.message}, {status: 500});
   }
 }

@@ -2,14 +2,24 @@ import {model, models, Schema} from "mongoose";
 import bcrypt from "bcrypt";
 
 const UserSchema = new Schema({
+  isOAuthUser: {
+    type: Boolean,
+    default: false,
+  },
   email: {
     type: String,
-    required: true,
+    required: function() {
+      // Make password required only if not an OAuth user
+      return !this.isOAuthUser;
+    },
     unique: true,
   },
   password: {
+    required: function() {
+      // Make password required only if not an OAuth user
+      return !this.isOAuthUser;
+    },
     type: String,
-    required: true,
     validate: {
       validator: function (pass) {
         return /^(?=.*\d)(?=.*[A-Z]).{6,}$/.test(pass);

@@ -48,12 +48,25 @@ export default function RegisterPage() {
         } else {
           router.push('/'); // Redirect to home or desired page
         }
-
-
       }
     } catch (error) {
       toast.dismiss();
       toast.error('An error occurred during registration.');
+    }
+  }
+
+  async function handleGoogleSignUp() {
+    const result = await signIn('google', {
+      redirect: false,
+      callbackUrl: '/',
+    });
+
+    if (result.error) {
+      toast.error(result.error);
+    } else {
+      toast.success('Successfully signed up with Google!');
+      setTimeout(() => {}, 110000);
+      // Additional logic...
     }
   }
 
@@ -92,6 +105,8 @@ export default function RegisterPage() {
             <div className="flex-grow border-t border-gray-300"></div>
           </div>
           <button
+            onClick={handleGoogleSignUp}
+            type={"button"}
             className="flex items-center justify-center gap-2 border border-primary rounded-lg py-3 px-4 hover:bg-primary hover:text-white hover:border-transparent transition duration-200 text-lg">
             <IconGoogle/>
             Sign Up with Google
@@ -101,7 +116,7 @@ export default function RegisterPage() {
           <p className="text-gray-600">
             Already registered?
             <Link href="/login" className="text-primary ml-2 hover:underline">
-                Log in
+              Log in
             </Link>
           </p>
         </div>
