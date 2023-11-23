@@ -31,7 +31,7 @@ To get started with this project, clone the repository and install the dependenc
 3. Create a `.env.local` file and add the following environment variables:
 
    ```bash
-   MONGO_URL=[Your MongoDB URL]
+   MONGO_URI=[Your MongoDB URI]
    NEXTAUTH_URL=[Your NextAuth URL]
    NEXTAUTH_SECRET=[Your NextAuth Secret]
    GOOGLE_CLIENT_ID=[Your Google Client ID]
