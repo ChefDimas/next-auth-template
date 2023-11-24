@@ -6,6 +6,7 @@ import {User} from "@/models/User";
 import bcrypt from "bcrypt";
 
 const handler = NextAuth({
+  session: {strategy: 'jwt'},
   secret: process.env.NEXTAUTH_SECRET,
   providers: [
     GoogleProvider({
