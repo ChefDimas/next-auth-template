@@ -38,6 +38,9 @@ export const CardWrapper = ({
             <Social />
           </CardFooter>
       )}
+      <CardFooter>
+        
+      </CardFooter>
     </Card>
   );
 };
