@@ -16,6 +16,7 @@ import { LoginSchema } from "@/shemas";
 import * as z from "zod";
 import {Button} from "@/components/ui/button";
 import {FormError} from "@/components/auth/FormError";
+import {FormSuccess} from "@/components/auth/FormSuccess";
 
 // LoginForm component
 export const LoginForm = () => {
@@ -78,7 +79,8 @@ export const LoginForm = () => {
               )}
             />
           </div>
-            <FormError />
+            <FormError message={''}/>
+            <FormSuccess message={''}/>
             <Button type={'submit'} className={'w-full'}>
                 Login
             </Button>
