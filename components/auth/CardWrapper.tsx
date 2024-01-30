@@ -39,7 +39,6 @@ export const CardWrapper = ({
           </CardFooter>
       )}
       <CardFooter>
-        
       </CardFooter>
     </Card>
   );

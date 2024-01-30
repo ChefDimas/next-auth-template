@@ -14,12 +14,19 @@ import {
 import { Input } from "@/components/ui/input";
 import { LoginSchema } from "@/shemas";
 import * as z from "zod";
-import {Button} from "@/components/ui/button";
-import {FormError} from "@/components/auth/FormError";
-import {FormSuccess} from "@/components/auth/FormSuccess";
+import { Button } from "@/components/ui/button";
+import { FormError } from "@/components/auth/FormError";
+import { FormSuccess } from "@/components/auth/FormSuccess";
+import { login } from "@/api/auth/login";
+import { useState, useTransition } from "react";
+import Link from "next/link";
 
 // LoginForm component
 export const LoginForm = () => {
+  const [isPending, startTransition] = useTransition();
+  const [error, setError] = useState<string | undefined>("");
+  const [success, setSuccess] = useState<string | undefined>("");
+
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
@@ -29,8 +36,16 @@ export const LoginForm = () => {
   });
 
   const onSubmit = (values: z.infer<typeof LoginSchema>) => {
-    console.log(values);
-  }
+    setError("");
+    setSuccess("");
+    startTransition(() => {
+      login(values)
+          .then((data) => {
+            setError(data.error);
+            setSuccess(data.success);
+          })
+    });
+  };
 
   return (
     <CardWrapper
@@ -52,6 +67,7 @@ export const LoginForm = () => {
                   <FormControl>
                     <Input
                       {...field}
+                      disabled={isPending}
                       placeholder={"example@example.com"}
                       type={"email"}
                     />
@@ -70,6 +86,7 @@ export const LoginForm = () => {
                   <FormControl>
                     <Input
                       {...field}
+                      disabled={isPending}
                       placeholder={"********"}
                       type={"password"}
                     />
@@ -79,13 +96,16 @@ export const LoginForm = () => {
               )}
             />
           </div>
-            <FormError message={''}/>
-            <FormSuccess message={''}/>
-            <Button type={'submit'} className={'w-full'}>
-                Login
-            </Button>
+          <FormError message={error} />
+          <FormSuccess message={success} />
+          <Button type={"submit"} className={"w-full"} disabled={isPending}>
+            Login
+          </Button>
         </form>
       </Form>
+      <div className={"text-sm underline flex justify-center items-center m-4"}>
+        <Link href={"/auth/register"}>Don't have an account?</Link>
+      </div>
     </CardWrapper>
   );
 };
