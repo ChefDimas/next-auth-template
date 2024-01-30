@@ -14,6 +14,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { LoginSchema } from "@/shemas";
 import * as z from "zod";
+import {Button} from "@/components/ui/button";
+import {FormError} from "@/components/auth/FormError";
 
 // LoginForm component
 export const LoginForm = () => {
@@ -25,6 +27,10 @@ export const LoginForm = () => {
     },
   });
 
+  const onSubmit = (values: z.infer<typeof LoginSchema>) => {
+    console.log(values);
+  }
+
   return (
     <CardWrapper
       headerLabel={"Welcome back"}
@@ -33,7 +39,7 @@ export const LoginForm = () => {
       showSocial={true}
     >
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(() => {})} className={"space-y-6"}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className={"space-y-6"}>
           <div className={"space-y-4"}>
             {/*Login*/}
             <FormField
@@ -53,7 +59,29 @@ export const LoginForm = () => {
                 </FormItem>
               )}
             />
+            {/*Password*/}
+            <FormField
+              control={form.control}
+              name={"password"}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder={"********"}
+                      type={"password"}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
+            <FormError />
+            <Button type={'submit'} className={'w-full'}>
+                Login
+            </Button>
         </form>
       </Form>
     </CardWrapper>
